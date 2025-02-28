@@ -7,7 +7,6 @@ let fs = require("fs");
 let EventEmitter = require("events");
 
 function readJsonFromFile(fileName) {
-  // ***YOUR CODE HERE***
   try {
     const data = fs.readFileSync(fileName, "utf-8");
     return JSON.parse(data);
@@ -22,7 +21,6 @@ class CurrencyConverter extends EventEmitter {
     let rates = {};
     let usdMap = {};
 
-    // Calculate USD conversion rates and store them for cross conversion
     for (let i in usdPrices) {
       let o = usdPrices[i];
       let sym = o["asset_id_quote"];
@@ -33,18 +31,12 @@ class CurrencyConverter extends EventEmitter {
       usdMap[sym] = usdRate;
     }
 
-    // Calculate direct crypto-to-crypto conversion rates
     let symbols = Object.keys(usdMap);
     for (let from of symbols) {
       for (let to of symbols) {
         if (from !== to) {
           let tag = `${from}-${to}`;
-          // ***YOUR CODE HERE***
           rates[tag] = usdMap[to] / usdMap[from];
-          // set the rates for trading different cryptocurrencies directly,
-          // calculating the relative prices based off of their USD prices.
-          // For example, if `sym` is "BTC", calculate the values for
-          // "BTC-ETH", "ETH-BTC", "BTC-EOS", "EOS-BTC", etc.
         }
       }
     }
@@ -76,13 +68,9 @@ class CurrencyConverter extends EventEmitter {
       }
       console.log(`Updating ${sym} price to ${usdPrice} USD.`);
 
-      // Update USD rates
-      // complete the equality
-      // ***YOUR CODE HERE***
       this.rates[`USD-${sym}`] = usdPrice;
       this.rates[`${sym}-USD`] = 1 / usdPrice;
 
-      // Recalculate all crypto-to-crypto rates
       const symbols = Object.keys(this.rates)
         .filter((key) => key.startsWith("USD-"))
         .map((key) => key.split("-")[1]);
@@ -112,8 +100,6 @@ class CurrencyConverter extends EventEmitter {
   }
 }
 
-// All prices listed are in USD
-// write here your JSON File Path (rates.json)
 const PATH = "U:/Blockchain/Lab_1/rates.json";
 let cnv = new CurrencyConverter(readJsonFromFile(PATH));
 
@@ -134,7 +120,6 @@ console.log(
   "===================================================================="
 );
 
-// Test event handling
 cnv.emit(SHOW, { from: "EOS", to: "BTC" });
 console.log(
   "===================================================================="
